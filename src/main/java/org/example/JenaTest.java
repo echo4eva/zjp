@@ -1,5 +1,4 @@
 package org.example;
-
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.ontology.ObjectProperty;
 import org.apache.jena.rdf.model.*;
@@ -10,6 +9,8 @@ import org.apache.jena.vocabulary.DCTypes;
 import javax.xml.crypto.dsig.keyinfo.PGPData;
 import java.io.*;
 import java.util.ArrayList;
+
+import org.json.simple.JSONObject;
 
 public class JenaTest {
     public static void main(String[] args) {
@@ -202,5 +203,8 @@ public class JenaTest {
         System.out.println("Book's Copyright Status: " + copyright_status);
         System.out.println("Book's Publisher: " + publisher);
         System.out.println("Book's Subjects: " + subjs);
+
+        Book testBook = new Book(id, title, release_date, language, copyright_status, publisher);
+        System.out.println(testBook.getJSONObj().toJSONString());
     }
 }
