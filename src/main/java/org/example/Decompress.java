@@ -15,74 +15,32 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class Uncompress {
+public class Decompress {
 
     public static void main(String args[]) throws IOException, ArchiveException {
-//        decompressBz2();
-//        File tar = new File("C:\\Users\\peril\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar");
-//        File dest = new File("C:\\Users\\peril\\Downloads\\test");
-//        unTar(tar, dest);
-        parseFiles();
+        // Decompress the .tar.bz2 into just a .tar
+        String bz2Directory = "C:\\Users\\peril\\Downloads\\rdf-files.tar.bz2";
+        String tarDirectory = "C:\\Users\\peril\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar";
+        decompressBz2(bz2Directory, tarDirectory);
+        // Start extracting from the .tar file to get the Project Gutenberg catalog
+        File tar = new File(tarDirectory);
+        File catalogOutputDirectory = new File("C:\\Users\\peril\\Downloads\\test");
+        unTar(tar, catalogOutputDirectory);
+        // Test function - that goes through the whole catalog, checks for tangible files and returns their directory
+        parseFiles(catalogOutputDirectory.toString());
     }
-    public static void decompressBz2() {
-        String inputFile = "C:\\Users\\peril\\Downloads\\rdf-files.tar.bz2";
-        String outputFile = "C:\\Users\\peril\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar";
+    public static void decompressBz2(String inputFileDirectory, String outputFileDirectory) {
+//        String inputFile = "C:\\Users\\peril\\Downloads\\rdf-files.tar.bz2";
+//        String outputFile = "C:\\Users\\peril\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar";
         try {
-            var input = new BZip2CompressorInputStream(new BufferedInputStream(new FileInputStream(inputFile)));
-            var output = new FileOutputStream(outputFile);
+            var input = new BZip2CompressorInputStream(new BufferedInputStream(new FileInputStream(inputFileDirectory)));
+            var output = new FileOutputStream(outputFileDirectory);
             try (input; output) {
                 IOUtils.copy(input, output);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void uncompressTarBz2() throws IOException {
-        String tarFile = "C:\\Users\\peril\\Downloads\\rdf-files.tar.bz2";
-        File dest = new File("C:\\Users\\peril\\Downloads\\test");
-        dest.mkdir();
-        TarArchiveInputStream tarIn = null;
-
-        tarIn = new TarArchiveInputStream(
-                new BZip2CompressorInputStream(
-                        new BufferedInputStream(
-                                new FileInputStream(
-                                        tarFile
-                                )
-                        )
-                )
-        );
-
-        TarArchiveEntry tarEntry = tarIn.getNextTarEntry();
-        // tarIn is a TarArchiveInputStream
-        while (tarEntry != null) {// create a file with the same name as the tarEntry
-            File destPath = new File(dest, tarEntry.getName());
-            System.out.println("working: " + destPath.getCanonicalPath());
-            if (tarEntry.isDirectory()) {
-                destPath.mkdirs();
-            } else {
-                destPath = new File(dest.toString() + System.getProperty("file.separator") + tarEntry.getName());
-                //byte [] btoRead = new byte[(int)tarEntry.getSize()];
-                byte [] btoRead = new byte[1024];
-                //FileInputStream fin
-                //  = new FileInputStream(destPath.getCanonicalPath());
-                BufferedOutputStream bout =
-                        new BufferedOutputStream(new FileOutputStream(destPath));
-                int len = 0;
-
-                while((len = tarIn.read(btoRead)) != -1)
-                {
-                    bout.write(btoRead,0,len);
-                }
-
-                bout.close();
-                btoRead = null;
-
-            }
-            tarEntry = tarIn.getNextTarEntry();
-        }
-        tarIn.close();
     }
 
     private static List<File> unTar(final File inputFile, final File outputDir) throws FileNotFoundException, IOException, ArchiveException {
@@ -120,10 +78,9 @@ public class Uncompress {
         return untaredFiles;
     }
 
-    private static void parseFiles() {
-        try (Stream<Path> paths = Files.walk(Paths.get("C:\\Users\\peril\\Downloads\\test"))) {
-            paths.filter(Files::isRegularFile).forEach(System.out::println);
-
+    private static void parseFiles(String catalogOutputDirectory) {
+        try (Stream<Path> paths = Files.walk(Paths.get(catalogOutputDirectory))) {
+           paths.filter(Files::isRegularFile).forEach(x -> System.out.println(x));
         } catch (Exception e) {
             e.printStackTrace();
         }

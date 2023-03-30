@@ -94,7 +94,6 @@ public class Main {
 //        }
 
         JenaTest test = new JenaTest();
-
     }
 
 }
