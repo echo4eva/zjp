@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,16 +25,31 @@ public class TestingParsingRDFs {
     }
     public ArrayList<Book> getBooks() throws IOException {
 
+        System.out.println("in TestingParsingRDFs");
+
         ArrayList<Book> extractedBooks = new ArrayList<>();
 
         // The directory where the catalog is saved in after unzipping/extracting
-        Path catalogDirectory = Paths.get("C:\\Users\\peril\\Downloads\\test");
-        // Gets a list of all the .rdf file directories
-        List<Path> directories = parseFiles(catalogDirectory);
+//        Path catalogDirectory = Paths.get("C:\\Users\\peril\\Downloads\\test");
+        String inputFilePath = "catalog";
+//        ClassLoader classLoader = ReadF
+        Path catalogDirectory = Paths.get("pg1.rdf");
 
-        for (int i = 0; i < 30; i++) {
-            String givenPath = directories.get(i).toString();
-            String fileName = givenPath.substring(givenPath.lastIndexOf("\\") + 1);
+//        Paths.get(getClass().getResource("/catalog").toURI()).resolve(filename)
+
+        // ****** COMMETNEDF OUT FOR NOW
+        // Gets a list of all the .rdf file directories
+        // List<Path> directories = parseFiles(catalogDirectory);
+
+        // iterate through all = i < directories.size()
+        for (int i = 0; i < 1; i++) {
+            // ****** COMENTED OUT FOR NOW
+//            String givenPath = directories.get(i).toString();
+            // ******** COMMENTED OUT FOR NOW
+//            String fileName = givenPath.substring(givenPath.lastIndexOf("\\") + 1);
+            String givenPath = "pg1.rdf";
+            String fileName = givenPath;
+
             Model model = ModelFactory.createDefaultModel();
 
             System.out.println("=====[BOOK " + i + "]=====");
@@ -50,8 +66,8 @@ public class TestingParsingRDFs {
 
             // Initializing and Assigning Variables of things we want from the .rdf file
             // public.books
-            int indexEndOfID = givenPath.indexOf(".");
-            int indexStartOfID = givenPath.indexOf("g") + 1;
+            int indexEndOfID = givenPath.lastIndexOf(".");
+            int indexStartOfID = givenPath.lastIndexOf("g") + 1;
             int id = Integer.parseInt(givenPath.substring(indexStartOfID, indexEndOfID));
             int auth_id = 0;
             int subj_id = 0;

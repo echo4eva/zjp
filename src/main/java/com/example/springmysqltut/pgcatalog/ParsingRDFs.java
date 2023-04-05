@@ -20,7 +20,7 @@ public class ParsingRDFs {
 
     public static void main(String args[]) throws IOException {
         // The directory where the catalog is saved in after unzipping/extracting
-        Path catalogDirectory = Paths.get("C:\\Users\\peril\\Downloads\\test");
+        Path catalogDirectory = Paths.get("pg1.rdf");
         // Gets a list of all the .rdf file directories
         List<Path> directories = parseFiles(catalogDirectory);
 

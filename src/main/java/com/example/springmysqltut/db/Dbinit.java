@@ -15,6 +15,8 @@ public class Dbinit implements CommandLineRunner {
 
     @Override
     public void run(String[] args) throws Exception {
+        System.out.println("running");
+
         TestingParsingRDFs a = new TestingParsingRDFs(directoryPath);
         this.bookRepository.saveAll(a.getBooks());
     }
