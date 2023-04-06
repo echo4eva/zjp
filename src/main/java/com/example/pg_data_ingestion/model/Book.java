@@ -12,18 +12,22 @@ import java.util.HashSet;
 public class Book {
     @Id
     @Column(name="book_id")
+    @JsonFormat
     Long bookId;
 
     @Column(name="title", columnDefinition ="LONGTEXT")
+    @JsonFormat
     String title;
     @Column(name="release_date")
     @JsonFormat(pattern="yyyy-MM-dd")
     Date release_date;
 
     @Column(name="language")
+    @JsonFormat
     String lang;
 
     @Column(name="copyright_status")
+    @JsonFormat
     String copyright_status;
 
     @ManyToMany(fetch=FetchType.LAZY)

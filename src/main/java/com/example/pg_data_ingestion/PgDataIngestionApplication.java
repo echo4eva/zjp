@@ -62,7 +62,7 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 
 		//Go through directories
 		// all books -> directories.size()
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 10; i++) {
 			String givenPath = directories.get(i).toString();
 			String fileName = givenPath.substring(givenPath.lastIndexOf("\\") + 1);
 			Model model = ModelFactory.createDefaultModel();
