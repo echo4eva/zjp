@@ -15,6 +15,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.FileManager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,14 +54,15 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 		}*/
 
 		//RDF Parser Test Injection ----------------------------------------------------- /
-		Path catalogDirectory = Paths.get("D:\\Projects\\Assets\\PG_RDF_Files");
+		Path catalogDirectory = Paths.get("C:\\Users\\peril\\Downloads\\test");
 		List<Path> directories = parseFiles(catalogDirectory);
 
-		System.out.println(directories);
+		//System.out.println(directories);
 
 
 		//Go through directories
-		for (int i = 0; i < directories.size(); i++) {
+		// all books -> directories.size()
+		for (int i = 0; i < 10000; i++) {
 			String givenPath = directories.get(i).toString();
 			String fileName = givenPath.substring(givenPath.lastIndexOf("\\") + 1);
 			Model model = ModelFactory.createDefaultModel();
@@ -75,25 +80,22 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 			model.read(in, base);
 
 			// Initializing and Assigning Variables of things we want from the .rdf file
-			// public.books
 			int indexEndOfID = givenPath.indexOf(".");
 			int indexStartOfID = givenPath.indexOf("g") + 1;
 			int id = Integer.parseInt(givenPath.substring(indexStartOfID, indexEndOfID));
 			int auth_id = 0;
 			int subj_id = 0;
-			String title = "";
-			String release_date = "";
-			String language = "";
-			String copyright_status = "";
-			// added
-			ArrayList<String> subjs = new ArrayList<String>();
-			String publisher = "";
-			// public.author
-			String name = "";
-			String entry = "";
-			// added
 			int death_date = 0;
 			int birth_date = 0;
+			Date release_date = null;
+			String wiki_page = "";
+			String title = "";
+			String language = "";
+			String copyright_status = "";
+			String publisher = "";
+			String entry = "";
+			ArrayList<String> subjs = new ArrayList<String>();
+			ArrayList<String> name = new ArrayList<String>();
 
 			// Parsing through the whole .rdf file to get property/predicate values
 			StmtIterator it = model.listStatements();
@@ -103,14 +105,21 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 				Property predicate = stmt.getPredicate();
 				RDFNode object = stmt.getObject();
 
+				// Debug -> to parse through all .rdf statements
+				// System.out.println(stmt);
+
 				String predicateString = predicate.toString();
 				String objectString = object.toString();
 
 				// Getting property/predicate values depending on current statement's property/predicate
 				switch (predicateString) {
+					// Author's wiki
+					case "http://www.gutenberg.org/2009/pgterms/webpage":
+						wiki_page = objectString;
+						break;
 					// Author's name
 					case "http://www.gutenberg.org/2009/pgterms/name":
-						name = object.toString();
+						name.add(object.toString());
 						break;
 					// Author's death date
 					case "http://www.gutenberg.org/2009/pgterms/deathdate":
@@ -126,7 +135,16 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 						break;
 					// Book's release date
 					case "http://purl.org/dc/terms/issued":
-						release_date = objectString.substring(0, 10);
+						String temp_release_date = objectString.substring(0, 10);
+						System.out.println("Temp release date is " + temp_release_date);
+
+						try {
+							release_date = new SimpleDateFormat("yyyy-MM-dd").parse(temp_release_date);
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+
+
 						break;
 					// Book's subject or language
 					case "http://www.w3.org/1999/02/22-rdf-syntax-ns#value":
@@ -157,13 +175,17 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 			}
 
 			//Check if author exists in the database, if not add them to database
-			Author author_object = new Author(name, "www.wikipedia.com");
-			if (authorRepo.findByName(author_object.getName()).size() != 0) {
-				System.out.println("Author " + author_object.getName() + " already exists" + " with ID " + authorRepo.findByName(author_object.getName()).get(0).getId());
-			}
-			else {
-				System.out.println("Author " + author_object.getName() + " does not exist in the database. Adding Author");
-				authorRepo.save(author_object);
+			for (int n = 0; n < name.size(); n++)
+			{
+				Author author_object = new Author(name.get(n), wiki_page);
+
+				if (authorRepo.findByName(author_object.getName()).size() != 0) {
+					System.out.println("Author " + author_object.getName() + " already exists" + " with ID " + authorRepo.findByName(author_object.getName()).get(0).getId());
+				}
+				else {
+					System.out.println("Author " + author_object.getName() + " does not exist in the database. Adding Author");
+					authorRepo.save(author_object);
+				}
 			}
 
 			//Check the subjects if they exist in the database, if not then add them to the database
@@ -184,9 +206,13 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 			//Add the book to the Database
 			System.out.println("-------- PARSING BOOK -----------");
 			//Book Parser
-			Book book_object = new Book(Long.valueOf(id), title, language, copyright_status);
-			Author temp_author = authorRepo.findByName(name).get(0);
-			book_object.addAuthor(temp_author);
+			Book book_object = new Book(Long.valueOf(id), title, release_date, language, copyright_status);
+
+			for (int n = 0; n < name.size(); n++) {
+				Author temp_author = authorRepo.findByName(name.get(n)).get(0);
+				book_object.addAuthor(temp_author);
+			}
+
 
 			for (int s = 0; s < subjs.size(); s++) {
 				Subject temp_subject = subjectRepo.findByName(subjs.get(s)).get(0);

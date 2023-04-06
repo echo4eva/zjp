@@ -14,7 +14,7 @@ public class Book {
     @Column(name="book_id")
     Long bookId;
 
-    @Column(name="title")
+    @Column(name="title", columnDefinition ="LONGTEXT")
     String title;
     @Column(name="release_date")
     @JsonFormat(pattern="yyyy-MM-dd")
@@ -45,9 +45,10 @@ public class Book {
     public Book() {
 
     }
-    public Book(Long id, String title, String lang, String copyright_status) {
+    public Book(Long id, String title, Date release_date, String lang, String copyright_status) {
         this.bookId = id;
         this.title = title;
+        this.release_date = release_date;
         this.lang = lang;
         this.copyright_status = copyright_status;
     }
