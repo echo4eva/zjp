@@ -10,8 +10,6 @@ import java.util.List;
 public interface SubjectRepo extends JpaRepository<Subject, Integer> {
     @Query("FROM Subject WHERE name = ?1")
     List<Subject> findByName(String name);
-
-
 }
 
 

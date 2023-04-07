@@ -3,6 +3,7 @@ package com.example.pg_data_ingestion.controller;
 
 import com.example.pg_data_ingestion.model.Book;
 import com.example.pg_data_ingestion.repo.CatalogRepo;
+import com.example.pg_data_ingestion.repo.SubjectRepo;
 import com.example.pg_data_ingestion.service.CatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,11 @@ public class MainController {
     @GetMapping("/book/{id}")
     public Book getBook(@PathVariable("id") int id) {
         return catalogService.getBook(id);
+    }
+
+    @GetMapping("/books/subject/{id}")
+    public List<Book> getAllBooksBySubjectId(@PathVariable("id") long id) {
+        return catalogService.getBooksBySubjectId(id);
     }
 
     @DeleteMapping("/book/{id}")
