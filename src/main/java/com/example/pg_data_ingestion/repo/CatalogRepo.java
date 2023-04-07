@@ -29,7 +29,7 @@ public interface CatalogRepo  extends JpaRepository<Book, Integer>{
      * @param authorId unique author ID to search
      * @return A list of books with a matching author ID
      */
-    @Query("SELECT b from Book b JOIN b.authors a where a.author_id = :authorId")
+    @Query("SELECT b from Book b JOIN b.authors a where a.authorId = :authorId")
     List<Book> findBookByAuthorID(Long authorId);
 
 
