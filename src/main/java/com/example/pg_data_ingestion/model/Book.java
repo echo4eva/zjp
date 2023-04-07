@@ -19,7 +19,7 @@ public class Book {
     @JsonFormat
     String title;
     @Column(name="release_date")
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     Date release_date;
 
     @Column(name="language")
@@ -61,5 +61,8 @@ public class Book {
     }
     public void addSubject(Subject subject) {
         this.subjects.add(subject);
+    }
+    public String getTitle() {
+        return this.title;
     }
 }

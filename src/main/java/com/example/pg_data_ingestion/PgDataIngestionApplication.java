@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.FileManager;
 
+import javax.sound.midi.SysexMessage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -54,7 +55,7 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 		}*/
 
 		//RDF Parser Test Injection ----------------------------------------------------- /
-		Path catalogDirectory = Paths.get("C:\\Users\\peril\\Downloads\\test");
+		Path catalogDirectory = Paths.get("D:\\Projects\\Assets\\PG_RDF_Files");
 		List<Path> directories = parseFiles(catalogDirectory);
 
 		//System.out.println(directories);
@@ -62,7 +63,7 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 
 		//Go through directories
 		// all books -> directories.size()
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < directories.size(); i++) {
 			String givenPath = directories.get(i).toString();
 			String fileName = givenPath.substring(givenPath.lastIndexOf("\\") + 1);
 			Model model = ModelFactory.createDefaultModel();
@@ -219,20 +220,25 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 				book_object.addSubject(temp_subject);
 			}
 			bookRepo.save(book_object);
-
-			/*
-			System.out.println("Author's Name: " + name);
-			System.out.println("Author's Birth Date: " + birth_date);
-			System.out.println("Author's Death Date: " + death_date);
-			System.out.println("Books ID: " + id);
-			System.out.println("Book's Title: " + title);
-			System.out.println("Book's Release: " + release_date);
-			System.out.println("Book's Language: " + language);
-			System.out.println("Book's Copyright Status: " + copyright_status);
-			System.out.println("Book's Publisher: " + publisher);
-			System.out.println("Book's Subjects: " + subjs);
-			*/
 		}
+
+		/*
+		System.out.println("------ REPO TEST QUERY --------");
+		System.out.println("Finding American Revolutionary War By ID");
+		List<Book> bookList_ofSubject = bookRepo.findBookBySubjectID(subjectRepo.findByName("American Revolutionary War").get(0).getId());
+		for (int d = 0; d < bookList_ofSubject.size(); d++) {
+			System.out.println(bookList_ofSubject.get(d).getTitle());
+		}
+		System.out.println("Size of List" + bookList_ofSubject.size());
+
+		System.out.println("------ REPO TEST QUERY --------");
+		System.out.println("Finding American Revolutionary War By NAME");
+		List<Book> bookList_ofSubject_2 = bookRepo.findBookBySubjectName("American Revolutionary War");
+		for (int d = 0; d < bookList_ofSubject_2.size(); d++) {
+			System.out.println(bookList_ofSubject_2.get(d).getTitle());
+		}
+		System.out.println("Size of List" + bookList_ofSubject_2.size());
+		*/
 	}
 	private static List<Path> parseFiles(Path path) throws IOException{
 		List<Path> result;
