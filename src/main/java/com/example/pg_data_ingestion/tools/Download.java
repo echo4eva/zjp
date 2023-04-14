@@ -8,16 +8,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Download {
-    public static void main(String[] args) throws IOException {
+    public static void main(String downloadURL, String bz2Dir) throws IOException {
 
-        String FILE_URL = "https://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2";
-        String FILE_NAME = "C:\\Users\\jerii\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar.bz2";
         int CONNECT_TIMEOUT = 0;
         int READ_TIMEOUT = 0;
 
         FileUtils.copyURLToFile(
-                new URL(FILE_URL),
-                new File(FILE_NAME),
+                new URL(downloadURL),
+                new File(bz2Dir),
                 CONNECT_TIMEOUT,
                 READ_TIMEOUT);
     }

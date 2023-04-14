@@ -17,14 +17,12 @@ import java.util.stream.Stream;
 
 public class Decompress {
 
-    public static void main(String args[]) throws IOException, ArchiveException {
+    public static void main(String bz2Dir, String tarDir, String catalogDir) throws IOException, ArchiveException {
         // Decompress the .tar.bz2 into just a .tar
-        String bz2Directory = "C:\\Users\\jerii\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar.bz2";
-        String tarDirectory = "C:\\Users\\jerii\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar";
-        decompressBz2(bz2Directory, tarDirectory);
+        decompressBz2(bz2Dir, tarDir);
         // Start extracting from the .tar file to get the Project Gutenberg catalog
-        File tar = new File(tarDirectory);
-        File catalogOutputDirectory = new File("C:\\Users\\jerii\\Desktop\\test");
+        File tar = new File(tarDir);
+        File catalogOutputDirectory = new File(catalogDir);
         unTar(tar, catalogOutputDirectory);
         // Test function - that goes through the whole catalog, checks for tangible files and returns their directory
         // parseFiles(catalogOutputDirectory.toString());

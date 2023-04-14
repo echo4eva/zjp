@@ -46,14 +46,40 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 	}
 
 	public void run(String... args) throws Exception {
+		/*
+		These directories will be used in tools such as
+		Download
+			- URL to download
+			- directory where to put .bz2 file
+		Decompress
+			- directory where the downloaded .bz2 file is
+			- directory where to decompress .bz2 to .tar
+			- directory where to decompress .tar to whole PG catalog
+		and this run() function
+			- directory where to start parsing
+			- directories of .bz2, .tar, and whole PG catalog to delete
+		 */
+		// Where we want the file to be downloaded, also where it is located and named
+		String bz2Dir = "C:\\Users\\jerii\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar.bz2";
+		Path bz2DirPath = Paths.get(bz2Dir);
+		// Step 1/2 of decompress, where we want the .tar to be located and named
+		String tarDir = "C:\\Users\\jerii\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar";
+		Path tarDirPath = Paths.get(tarDir);
+		// Step 2/2 of decompress, where we want the PG Catalog to be located
+		// anything after "test" will be "cache\\epub\\..."
+		String catalogDir = "C:\\Users\\jerii\\Desktop\\test";
+		Path catalogDirPath = Paths.get(catalogDir);
+		// The URL of where to download the PG Catalog
+		String downloadURL = "https://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2";
+
 
 		boolean isIngested = false;
 
 		if (isIngested == false) {
 
-			Download.main(null);
+			Download.main(downloadURL, bz2Dir);
 			System.out.println("book catalog is downloaded");
-			Decompress.main(null);
+			Decompress.main(bz2Dir, tarDir, catalogDir);
 			System.out.println("decompression is done");
 
 			/*Subject subject_test = new Subject("Canadian History");
@@ -67,8 +93,7 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 			}*/
 
 			//RDF Parser Test Injection ----------------------------------------------------- /
-			Path catalogDirectory = Paths.get("C:\\Users\\jerii\\Desktop\\test");
-			List<Path> directories = parseFiles(catalogDirectory);
+			List<Path> directories = parseFiles(catalogDirPath);
 
 			//System.out.println(directories);
 
@@ -232,17 +257,14 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 			}
 
 			// Start deleting
-			Path bz2Path = Paths.get("C:\\Users\\jerii\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar.bz2");
-			Path tarPath = Paths.get("C:\\Users\\jerii\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar");
-			Path catalogPath = Paths.get("C:\\Users\\jerii\\Desktop\\test\\cache");
 
 			try {
-				boolean bz2IsDeleted = Files.deleteIfExists(bz2Path);
+				boolean bz2IsDeleted = Files.deleteIfExists(bz2DirPath);
 				System.out.println("bz2 deleted: " + bz2IsDeleted);
-				boolean tarIsDeleted = Files.deleteIfExists(tarPath);
+				boolean tarIsDeleted = Files.deleteIfExists(tarDirPath);
 				System.out.println("tar deleted: " + tarIsDeleted);
 
-				Path dir = catalogPath; //path to the directory
+				Path dir = catalogDirPath; //path to the directory
 				Files
 						.walk(dir) // Traverse the file tree in depth-first order
 						.sorted(Comparator.reverseOrder())
