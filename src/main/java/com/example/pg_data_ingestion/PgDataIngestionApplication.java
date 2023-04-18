@@ -62,14 +62,14 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 			- directories of .bz2, .tar, and whole PG catalog to delete
 		 */
 		// Where we want the file to be downloaded, also where it is located and named
-		String bz2Dir = "C:\\Users\\jerii\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar.bz2";
+		String bz2Dir = "/home/ec2-user/rdf-files.tar.bz2";
 		Path bz2DirPath = Paths.get(bz2Dir);
 		// Step 1/2 of decompress, where we want the .tar to be located and named
-		String tarDir = "C:\\Users\\jerii\\IdeaProjects\\zjp\\src\\main\\resources\\rdf-files.tar";
+		String tarDir = "/home/ec2-user/rdf-files.tar";
 		Path tarDirPath = Paths.get(tarDir);
 		// Step 2/2 of decompress, where we want the PG Catalog to be located
 		// anything after "test" will be "cache\\epub\\..."
-		String catalogDir = "C:\\Users\\jerii\\Desktop\\test";
+		String catalogDir = "/home/ec2-user/tempLib";
 		Path catalogDirPath = Paths.get(catalogDir);
 		// The URL of where to download the PG Catalog
 		String downloadURL = "https://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2";
