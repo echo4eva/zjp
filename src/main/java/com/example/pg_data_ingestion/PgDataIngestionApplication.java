@@ -9,6 +9,7 @@ import com.example.pg_data_ingestion.repo.SubjectRepo;
 
 import com.example.pg_data_ingestion.tools.Decompress;
 import com.example.pg_data_ingestion.tools.Download;
+import com.example.pg_data_ingestion.tools.VerifyDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +19,7 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.util.FileManager;
 
 import javax.sound.midi.SysexMessage;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -72,8 +74,13 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 		// The URL of where to download the PG Catalog
 		String downloadURL = "https://www.gutenberg.org/cache/epub/feeds/rdf-files.tar.bz2";
 
-
-		boolean isIngested = false;
+		//Validation DB
+		ArrayList<Integer> testQueries = new ArrayList<Integer>();
+		testQueries.add(1);
+		testQueries.add(45000);
+		testQueries.add(3500);
+		VerifyDB verifyDb = new VerifyDB();
+		boolean isIngested = verifyDb.VerifyByBookID(bookRepo, testQueries);
 
 		if (isIngested == false) {
 
