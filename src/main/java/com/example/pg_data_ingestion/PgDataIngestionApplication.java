@@ -79,8 +79,9 @@ public class PgDataIngestionApplication implements CommandLineRunner {
 		testQueries.add(1);
 		testQueries.add(45000);
 		testQueries.add(3500);
-		VerifyDB verifyDb = new VerifyDB();
-		boolean isIngested = verifyDb.VerifyByBookID(bookRepo, testQueries);
+
+		VerifyDB verifydb = new VerifyDB(bookRepo);
+		boolean isIngested = verifydb.VerifyByBookID(testQueries);
 
 		if (isIngested == false) {
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CatalogRepo  extends JpaRepository<Book, Integer>{
 
-    @Query("SELECT b FROM Book b WHERE b.book_id = :bookId")
+    @Query("SELECT b from Book b WHERE b.bookId = :bookId")
     Book findBookByID(Long bookId);
     /**
      * Returns a list of books that contains the matching Subject ID
